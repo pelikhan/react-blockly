@@ -1,16 +1,16 @@
 import React from "react";
 import Blockly, {Workspace, WorkspaceSvg} from "blockly";
-import {UseBlocklyProps} from "./BlocklyWorkspaceProps";
+import {UseBlocklyProps, BlocklyWorkspaceState} from "./BlocklyWorkspaceProps";
 
 import debounce from "./debounce";
 
-function importFromXml(xml: string, workspace: Workspace, onImportXmlError: (error: any) => void) {
+function importFromJSON(json: BlocklyWorkspaceState, workspace: Workspace, onImportJSONError: (error: any) => void) {
   try {
-    Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(xml), workspace);
+    Blockly.serialization.workspaces.load(json, workspace)
     return true;
   } catch (e) {
-    if (onImportXmlError) {
-      onImportXmlError(e);
+    if (onImportJSONError) {
+      onImportJSONError(e);
     }
     return false;
   }
@@ -18,16 +18,16 @@ function importFromXml(xml: string, workspace: Workspace, onImportXmlError: (err
 
 const useBlocklyWorkspace = ({
   ref,
-  initialXml,
+  initialJSON,
   toolboxConfiguration,
   workspaceConfiguration,
   onWorkspaceChange,
-  onImportXmlError,
+  onImportJSONError,
   onInject,
   onDispose,
-}: UseBlocklyProps): {workspace: WorkspaceSvg|null, xml: string|null} => {
+}: UseBlocklyProps): {workspace: WorkspaceSvg|null, json: BlocklyWorkspaceState|null} => {
   const [workspace, setWorkspace] = React.useState<WorkspaceSvg|null>(null);
-  const [xml, setXml] = React.useState<string|null>(initialXml);
+  const [json, setJSON] = React.useState<object|null>(initialJSON);
   const [didInitialImport, setDidInitialImport] = React.useState(false);
   const [didHandleNewWorkspace, setDidHandleNewWorkspace] =
     React.useState(false);
@@ -57,7 +57,7 @@ const useBlocklyWorkspace = ({
   }, [onDispose]);
 
   const handleWorkspaceChanged = React.useCallback(
-    (newWorkspace) => {
+    (newWorkspace: WorkspaceSvg) => {
       if (onWorkspaceChange) {
         onWorkspaceChange(newWorkspace);
       }
@@ -123,14 +123,12 @@ const useBlocklyWorkspace = ({
     }
 
     const [callback, cancel] = debounce(() => {
-      const newXml = Blockly.Xml.domToText(
-        Blockly.Xml.workspaceToDom(workspace)
-      );
-      if (newXml === xml) {
+      const newJSON = Blockly.serialization.workspaces.save(workspace)
+      if (JSON.stringify(newJSON) === JSON.stringify(json)) {
         return;
       }
 
-      setXml(newXml);
+      setJSON(json);
     }, 200);
 
     workspace.addChangeListener(callback);
@@ -139,20 +137,20 @@ const useBlocklyWorkspace = ({
       workspace.removeChangeListener(callback);
       cancel();
     };
-  }, [workspace, xml]);
+  }, [workspace, json]);
 
   // Initial Xml Changes
   React.useEffect(() => {
-    if (xml && workspace && !didInitialImport) {
-      const success = importFromXml(xml, workspace, onImportXmlError);
+    if (json && workspace && !didInitialImport) {
+      const success = importFromJSON(json, workspace, onImportJSONError);
       if (!success) {
-        setXml(null);
+        setJSON(null);
       }
       setDidInitialImport(true);
     }
-  }, [xml, workspace, didInitialImport, onImportXmlError]);
+  }, [json, workspace, didInitialImport, onImportJSONError]);
 
-  return { workspace, xml };
+  return { workspace, json };
 };
 
 export default useBlocklyWorkspace;

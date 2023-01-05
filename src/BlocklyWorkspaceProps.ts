@@ -1,19 +1,21 @@
-import Blockly, {WorkspaceSvg} from "blockly";
-import {RefObject} from "react";
+import Blockly, { WorkspaceSvg } from "blockly";
+import { RefObject } from "react";
+
+export type BlocklyWorkspaceState = { [key: string]: any };
 
 export interface CommonBlocklyProps {
-    initialXml: string,
+    initialJSON: BlocklyWorkspaceState,
     toolboxConfiguration: Blockly.utils.toolbox.ToolboxDefinition,
     workspaceConfiguration: Blockly.BlocklyOptions,
     onWorkspaceChange: (workspace: WorkspaceSvg) => void,
-    onImportXmlError: (error: any) => void,
+    onImportJSONError: (error: any) => void,
     onInject: (newWorkspace: WorkspaceSvg) => void,
     onDispose: (workspace: WorkspaceSvg) => void
 }
 
 export interface BlocklyWorkspaceProps extends CommonBlocklyProps {
     className: string,
-    onXmlChange: (xml: string) => void,
+    onJSONChange: (json: BlocklyWorkspaceState) => void,
 }
 
 export interface UseBlocklyProps extends CommonBlocklyProps {
