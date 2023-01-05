@@ -19,24 +19,24 @@
   "author": "Nat Budin <natbudin@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "blockly": ">= 3.20200024.0",
-    "prop-types": ">= 15.6.0"
+    "blockly": ">=9.2.0",
+    "prop-types": ">=15.8.1"
   },
   "peerDependencies": {
     "react": "^16.8 || ^17.0 || ^18.0"
   },
   "devDependencies": {
-    "@types/node": "^12.0.0",
-    "@types/react": "^17.0.0",
-    "@types/react-dom": "^17.0.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-scripts": "5.0.0",
-    "ts-loader": "^9.2.6",
-    "typescript": "^4.1.2",
-    "webpack": "^5.63.0",
-    "webpack-cli": "^4.9.1",
-    "webpack-dev-server": "^4.4.0"
+    "@types/node": "^18.11.18",
+    "@types/react": "^18.0.26",
+    "@types/react-dom": "^18.0.10",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1",
+    "ts-loader": "^9.4.2",
+    "typescript": "^4.9.4",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1",
+    "webpack-dev-server": "^4.11.1"
   },
   "eslintConfig": {
     "extends": [
